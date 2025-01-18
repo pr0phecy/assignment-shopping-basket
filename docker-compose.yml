@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
+    container_name: shopping_basket_app
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
@@ -16,7 +16,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
+    container_name: shopping_basket_db
     ports:
       - "3306:3306"
     environment:
