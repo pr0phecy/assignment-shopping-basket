@@ -22,10 +22,7 @@ class ProfileController extends Controller
      */
     public function index(): Factory|View
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return view('profile.index', compact('user'));
+        return view('profile.index');
     }
 
     /**
@@ -33,10 +30,7 @@ class ProfileController extends Controller
      */
     public function edit(): Factory|View
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return view('profile.edit', compact('user'));
+        return view('profile.edit');
     }
 
     /**
