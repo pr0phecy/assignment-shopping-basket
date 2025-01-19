@@ -29,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = RouteServiceProvider::PROFILE;
 
     /**
      * Create a new controller instance.
@@ -44,28 +44,43 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @param array<string, mixed> $data
      */
-    protected function validator(array $data)
+    protected function validator(array $data): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($data, [
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'           => ['required', 'string', 'max:255'],
+            'email'          => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password'       => ['required', 'string', 'min:8', 'confirmed'],
+            'phone'          => ['required', 'string', 'max:20'],
+            'address_line_1' => ['required', 'string', 'max:255'],
+            'city'           => ['required', 'string', 'max:100'],
+            'postal_code'    => ['required', 'string', 'max:10'],
+            'country'        => ['required', 'string', 'max:100'],
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @return User
+     * @param array<string, mixed> $data
      */
-    protected function create(array $data)
+    protected function create(array $data): User
     {
-        return User::create([
+        $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $user->contactDetails()->create([
+            'phone'          => $data['phone'],
+            'address_line_1' => $data['address_line_1'],
+            'city'           => $data['city'],
+            'postal_code'    => $data['postal_code'],
+            'country'        => $data['country'],
+        ]);
+
+        return $user;
     }
 }
