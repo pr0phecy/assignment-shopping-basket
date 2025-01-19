@@ -67,16 +67,6 @@ class CheckoutController extends Controller
 
         $basket->update(['completed' => true]);
 
-        $basketItems = $basket->items()->with('product')->get();
-        foreach ($basketItems as $item) {
-            $product = $item->product;
-
-            if ($product) {
-                $newStock = $product->stock - $item->quantity;
-                $product->update(['stock' => $newStock]);
-            }
-        }
-
         self::applyDiscountlogic($user, $request);
 
         Mail::to($user->email)->later(now()->addSeconds(2), new PurchaseEmail());

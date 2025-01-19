@@ -22,8 +22,8 @@
                     <tr>
                         <td>{{ $product->name }}</td>
                         <td>{{ $basketData[$product->id] }}</td>
-                        <td>${{ number_format($product->price, 2) }}</td>
-                        <td>${{ number_format($basketData[$product->id] * $product->price, 2) }}</td>
+                        <td>€{{ number_format($product->price, 2) }}</td>
+                        <td>€{{ number_format($basketData[$product->id] * $product->price, 2) }}</td>
                         <td>
                             <form action="{{ route('basket.remove', $product->id) }}" method="POST">
                                 @csrf
@@ -36,7 +36,7 @@
                 <tfoot>
                 <tr>
                     <td colspan="3"><strong>Total</strong></td>
-                    <td>${{ number_format($total, 2) }}</td>
+                    <td>€{{ number_format($total, 2) }}</td>
                     <td>
                         <form action="{{ route('basket.clear') }}" method="POST">
                             @csrf

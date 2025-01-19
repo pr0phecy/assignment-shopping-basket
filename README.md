@@ -8,7 +8,7 @@ We’d like you to create a small e-commerce application for us to get some insi
 - Do not include new packages
 
 # Installation
-- `git@github.com:pr0phecy/assignment-shopping-basket.git`
+- `git clone git@github.com:pr0phecy/assignment-shopping-basket.git`
 - `make build`
 - `make setup`
 

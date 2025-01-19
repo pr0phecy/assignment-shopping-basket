@@ -30,8 +30,8 @@ class BasketController extends Controller
             );
 
             $basketItems = $basket->items;
-            $products = Product::whereIn('id', $basketItems->pluck('product_id'))->get();
             $basketData = $basketItems->pluck('quantity', 'product_id')->toArray();
+            $products = Product::whereIn('id', $basketItems->pluck('product_id'))->get();
         } else {
             $basketData = json_decode($request->cookie('basket', '[]'), true, 512, JSON_THROW_ON_ERROR);
             $products = Product::whereIn('id', array_keys($basketData))->get();
@@ -53,6 +53,10 @@ class BasketController extends Controller
     {
         $quantity = $request->input('quantity', 1);
 
+        if ($product->stock < $quantity) {
+            return redirect()->route('basket.index')->withErrors(['message' => 'Not enough stock available.']);
+        }
+
         if (Auth::check()) {
             $basket = Basket::firstOrCreate(
                 [
@@ -64,14 +68,18 @@ class BasketController extends Controller
             $basketItem = $basket->items()->firstOrNew(['product_id' => $product->id]);
             $basketItem->quantity = ($basketItem->quantity ?? 0) + $quantity;
             $basketItem->save();
+
+            $product->decrement('stock', $quantity);
         } else {
             $basket = json_decode($request->cookie('basket', '[]'), true, 512, JSON_THROW_ON_ERROR);
             $basket[$product->id] = ($basket[$product->id] ?? 0) + $quantity;
 
-            return redirect()->route('basket.index')->withCookie(cookie()->forever('basket', json_encode($basket, JSON_THROW_ON_ERROR)));
+            $product->decrement('stock', $quantity);
+
+            return redirect()->route('home')->withCookie(cookie()->forever('basket', json_encode($basket, JSON_THROW_ON_ERROR)));
         }
 
-        return redirect()->route('basket.index');
+        return redirect()->route('home');
     }
 
     /**
@@ -91,10 +99,19 @@ class BasketController extends Controller
                 ]
             );
 
-            $basket->items()->where('product_id', $product->id)->delete();
+            $basketItem = $basket->items()->where('product_id', $product->id)->first();
+
+            if ($basketItem) {
+                $product->increment('stock', $basketItem->quantity);
+                $basketItem->delete();
+            }
         } else {
             $basket = json_decode($request->cookie('basket', '[]'), true, 512, JSON_THROW_ON_ERROR);
-            unset($basket[$product->id]);
+
+            if (isset($basket[$product->id])) {
+                $product->increment('stock', $basket[$product->id]);
+                unset($basket[$product->id]);
+            }
 
             return redirect()->route('basket.index')->withCookie(cookie()->forever('basket', json_encode($basket, JSON_THROW_ON_ERROR)));
         }
@@ -119,8 +136,22 @@ class BasketController extends Controller
                 ]
             );
 
+            foreach ($basket->items as $item) {
+                $item->product->increment('stock', $item->quantity);
+            }
+
             $basket->items()->delete();
         } else {
+            $basket = json_decode(request()->cookie('basket', '[]'), true, 512, JSON_THROW_ON_ERROR);
+
+            foreach ($basket as $productId => $quantity) {
+                $product = Product::find($productId);
+
+                if ($product) {
+                    $product->increment('stock', $quantity);
+                }
+            }
+
             return redirect()->route('basket.index')->withCookie(cookie()->forever('basket', json_encode([], JSON_THROW_ON_ERROR)));
         }
 
