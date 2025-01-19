@@ -76,10 +76,10 @@ class BasketController extends Controller
 
             $product->decrement('stock', $quantity);
 
-            return redirect()->route('basket.index')->withCookie(cookie()->forever('basket', json_encode($basket, JSON_THROW_ON_ERROR)));
+            return redirect()->route('home')->withCookie(cookie()->forever('basket', json_encode($basket, JSON_THROW_ON_ERROR)));
         }
 
-        return redirect()->route('basket.index');
+        return redirect()->route('home');
     }
 
     /**
