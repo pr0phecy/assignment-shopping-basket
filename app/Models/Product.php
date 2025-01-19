@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @method static whereIn(string $string, $pluck)
+ * @method static find(int|string $productId)
  *
  * @property string $id
+ * @property int $stock
  */
 class Product extends Model
 {
