@@ -151,6 +151,7 @@ class BasketController extends Controller
                     $product->increment('stock', $quantity);
                 }
             }
+
             return redirect()->route('basket.index')->withCookie(cookie()->forever('basket', json_encode([], JSON_THROW_ON_ERROR)));
         }
 
