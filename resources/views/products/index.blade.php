@@ -12,7 +12,7 @@
                 <div class="product-card">
                     <h2>{{ $product->name }}</h2>
                     <p>{{ $product->description }}</p>
-                    <p><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
+                    <p><strong>Price:</strong> €{{ number_format($product->price, 2) }}</p>
                     <p><strong>Stock:</strong> {{ $product->stock }}</p>
 
                     @if ($product->stock > 0)
