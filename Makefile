@@ -39,4 +39,8 @@ migrate: ## Run database migrations
 
 .PHONY: phpfixer
 phpfixer: ## Run PHP-CS-Fixer globally, because adding composer packages is not allowed
-	php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky=yes
+	php-cs-fixer fix --config=.php-cs-fixer.php
+
+.PHONY: phpstan
+phpstan: ## Run phpstan globally, because adding composer packages is not allowed
+	phpstan analyse --memory-limit=-1
