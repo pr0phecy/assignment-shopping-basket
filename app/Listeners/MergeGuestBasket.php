@@ -6,14 +6,13 @@ use App\Models\User;
 use App\Models\Basket;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Cookie;
-use JsonException;
 
 class MergeGuestBasket
 {
     /**
      * Handle the event.
      *
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function handle(Login $event): void
     {

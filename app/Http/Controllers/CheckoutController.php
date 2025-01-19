@@ -21,10 +21,6 @@ class CheckoutController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse|View
-     */
     public function index(Request $request): RedirectResponse|View
     {
         /** @var User $user */
@@ -58,10 +54,6 @@ class CheckoutController extends Controller
         return view('checkout.index', compact('products', 'subTotal', 'vat', 'discount', 'applyDiscount', 'total', 'discountCode'));
     }
 
-    /**
-     * @param Request $request
-     * @return RedirectResponse
-     */
     public function complete(Request $request): RedirectResponse
     {
         /** @var User $user */
@@ -92,11 +84,6 @@ class CheckoutController extends Controller
         return redirect()->route('home')->with('success', 'Checkout completed successfully!');
     }
 
-    /**
-     * @param User $user
-     * @param Request $request
-     * @return void
-     */
     private static function applyDiscountlogic(User $user, Request $request): void
     {
         if ($request->boolean('apply_discount')) {

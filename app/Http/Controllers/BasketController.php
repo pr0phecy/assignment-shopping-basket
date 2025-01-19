@@ -9,7 +9,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
-use JsonException;
 
 class BasketController extends Controller
 {
@@ -24,8 +23,10 @@ class BasketController extends Controller
 
         if (Auth::check()) {
             $basket = Basket::firstOrCreate(
-                ['user_id'      => Auth::id(),
-                    'completed' => false]
+                [
+                    'user_id'   => Auth::id(),
+                    'completed' => false,
+                ]
             );
 
             $basketItems = $basket->items;
@@ -54,8 +55,10 @@ class BasketController extends Controller
 
         if (Auth::check()) {
             $basket = Basket::firstOrCreate(
-                ['user_id'      => Auth::id(),
-                    'completed' => false]
+                [
+                    'user_id'   => Auth::id(),
+                    'completed' => false,
+                ]
             );
 
             $basketItem = $basket->items()->firstOrNew(['product_id' => $product->id]);
@@ -74,14 +77,18 @@ class BasketController extends Controller
     /**
      * Remove a product from the basket.
      *
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function remove(Request $request, Product $product): RedirectResponse
     {
         if (Auth::check()) {
             $basket = Basket::firstOrCreate(
-                ['user_id' => Auth::id()],
-                ['completed' => false]
+                [
+                    'user_id' => Auth::id(),
+                ],
+                [
+                    'completed' => false,
+                ]
             );
 
             $basket->items()->where('product_id', $product->id)->delete();
@@ -98,14 +105,18 @@ class BasketController extends Controller
     /**
      * Clear the basket.
      *
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function clear(): RedirectResponse
     {
         if (Auth::check()) {
             $basket = Basket::firstOrCreate(
-                ['user_id' => Auth::id()],
-                ['completed' => false]
+                [
+                    'user_id' => Auth::id(),
+                ],
+                [
+                    'completed' => false,
+                ]
             );
 
             $basket->items()->delete();
@@ -117,7 +128,8 @@ class BasketController extends Controller
     }
 
     /**
-     * @throws JsonException
+     * @throws \JsonException
+     *
      * @returns int
      */
     public static function getBasketCount(): int
