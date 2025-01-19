@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopping_basket_app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+  mailcatcher:
+    image: docker.io/sj26/mailcatcher
+    networks:
+      laravel:
+        aliases:
+          - mailcatcher.internal
+          - mailer
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+  db:
+    image: mysql:8.0
+    container_name: shopping_basket_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - laravel
+
+networks:
+  laravel:
+
+volumes:
+  db_data:
