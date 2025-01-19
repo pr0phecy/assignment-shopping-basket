@@ -69,7 +69,7 @@ class CheckoutController extends Controller
 
         self::applyDiscountlogic($user, $request);
 
-        Mail::to($user->email)->later(now()->addSeconds(2), new PurchaseEmail());
+        Mail::to($user->email)->later(now()->addMinutes(15), new PurchaseEmail());
 
         return redirect()->route('home')->with('success', 'Checkout completed successfully!');
     }
